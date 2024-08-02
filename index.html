@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flip Book with Covers</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet" />
+    <style>
+       /* Body style */
+/* Body style */
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Center container style */
+.center {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+/* Book container style */
+.book {
+    width: 400px;
+    height: 300px;
+    position: relative;
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
+/* Cover style */
+.cover {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-radius: 7mm;
+    box-shadow: 1px 2px 0 0 rgba(0, 0, 0, 0.15), 1px 3px 1px 0 rgba(0, 0, 0, 0.1);
+    background-size: cover;
+    background-position: center;
+}
+
+/* Front cover style */
+.front-cover {
+    background-color: rgb(255, 228, 130); 
+    background-image: none; /* Ensure no image is displayed on the front cover */
+}
+
+/* Back cover style */
+.back-cover {
+    background-image: url('back-cover-image-url.jpg'); /* Replace with your back cover image URL */
+    background-color: rgb(255, 228, 130);
+    transform: rotateY(180deg);
+}
+
+/* Pages container */
+.pages {
+    width: 380px; /* Match the width of the pages */
+    height: 270px; /* Match the height of the pages */
+    position: relative;
+    transform-style: preserve-3d;
+    display: flex;
+    align-items: center; /* Center vertically within the book */
+    justify-content: center; /* Center horizontally within the book */
+}
+
+/* Page style */
+.page {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    border-radius: 7mm;
+    margin: 0 6px; /* Adjust if needed */
+    transform-style: preserve-3d;
+    transform-origin: left;
+    transition: 0.25s;
+    box-shadow: 1px 2px 0 0 rgba(0, 0, 0, 0.15), 1px 3px 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Page side style */
+.page-side {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 30px; /* Adjust padding if necessary */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    backface-visibility: hidden;
+    border-radius: 7mm;
+    overflow: hidden;
+    background: white; /* White background for the page sides */
+}
+
+/* Page side image style */
+.page-side img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 0mm;
+}
+
+/* Front page style */
+.front {
+    background: white;
+    color: black; /* Ensure text color is visible against white background */
+}
+
+/* Back page style */
+.back {
+    background: white; /* Ensure the back side of the page is white */
+    color: black; /* Ensure text color is visible against white background */
+    transform: rotateY(180deg);
+}
+
+/* Controls container style */
+.controls {
+    width: 350px;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Controls button style */
+.controls button {
+    background: r(128, 128, 128);
+    width: 40px;
+    height: 40px;
+    border: 0.4mm solid rgb(40, 40, 40);
+    border-radius: 50%;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Upload container style */
+.upload-container {
+    margin: 20px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Space between buttons */
+}
+
+/* Custom label styling as a text-only button */
+.upload-container label {
+    background-color: #d2b48c; /* Same pastel yellow as book cover */
+    border: none;
+    border-radius: 7mm; /* Rounded corners to match book cover */
+    padding: 10px 20px; /* Adjust padding as needed */
+    color: #333; /* Text color */
+    font-size: 16px; /* Font size */
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transition for hover effect */
+    display: inline-block; /* Ensure it acts like a button */
+    text-align: center; /* Center text inside the label */
+    box-shadow: 1px 2px 0 0 rgba(0, 0, 0, 0.15), 1px 3px 1px 0 rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+}
+
+/* Hover effect for custom label */
+.upload-container label:hover {
+    background-color: #fce5a3; /* Slightly lighter pastel yellow on hover */
+    box-shadow: 1px 3px 0 0 rgba(0, 0, 0, 0.15), 1px 4px 2px 0 rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
+}
+
+/* Hide the actual file input */
+.upload-container input {
+    display: none;
+}
+
+/* Download Images button style */
+.download-button {
+    background: #d2b48c;
+    width: 168px; /* Adjust width as needed */
+    height: 40px; /* Adjust height as needed */
+    border: none;
+    border-radius: 7mm; /* Rounded corners to match the other button styles */
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px; /* Adjust font size if necessary */
+    box-shadow: 1px 2px 0 0 rgba(0, 0, 0, 0.15), 1px 3px 1px 0 rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transition for hover effect */
+}
+
+.download-button:hover {
+    background-color: rgb(255, 228, 130); 
+    box-shadow: 1px 3px 0 0 rgba(0, 0, 0, 0.15), 1px 4px 2px 0 rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
+}
+
+/* Buttons container style */
+.buttons-container {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between the buttons */
+}
+
+
+.download-button:hover {
+    background-color: #fce5a3; /* Slightly lighter pastel yellow on hover */
+    box-shadow: 1px 3px 0 0 rgba(0, 0, 0, 0.15), 1px 4px 2px 0 rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
+}
+ 
+/* Beads container style */
+.beads {
+    position: absolute;
+    top: 50%; /* Center vertically */
+    left: -12px; /* Adjust based on your design */
+    transform: translateY(-50%); /* Center vertically with respect to its height */
+    height: 270px; /* Adjust based on your design */
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly; /* Space beads evenly */
+    flex-direction: column;
+    z-index: 9999;
+}
+
+/* Bead style */
+.bead {
+    width: 36px;
+    height: 12px;
+    background: white;
+    border-radius: 5mm;
+    z-index: 9999;
+    box-shadow: inset 1px 2px 0 0 rgba(0, 0, 0, 0.15),
+                inset 1px 3px 1px 0 rgba(0, 0, 0, 0.1);
+}
+    </style>
+</head>
+<body>
+    <div class="center">
+       <div class="center">
+        <div class="upload-container">
+            <label for="upload">Upload Images</label>
+            <input type="file" id="upload" multiple accept="image/*" />
+            <button class="download-button" onclick="downloadImages()">Download Images</button>
+        </div>
+        <div class="book">
+            <div class="cover front-cover"></div>
+            <div class="cover back-cover"></div>
+            <div class="pages" id="pages">
+                <!-- Pages will be dynamically added here -->
+            </div>
+            <div class="beads">
+                <div class="bead"></div>
+                <div class="bead"></div>
+                <div class="bead"></div>
+                <div class="bead"></div>
+            </div>
+        </div>
+        <div class="controls">
+            <button type="button" onclick="turnLeft()">
+                <span class="material-icons-outlined">arrow_back</span>
+            </button>
+            <button type="button" onclick="turnRight()">
+                <span class="material-icons-outlined">arrow_forward</span>
+            </button>
+        </div>
+    </div>
+    <script>
+        let currentIndex = 0;
+        let imageFiles = [];
+
+        document.getElementById('upload').addEventListener('change', function(event) {
+            imageFiles = Array.from(event.target.files);
+            updatePages();
+        });
+
+        function updatePages() {
+            const pagesContainer = document.getElementById('pages');
+            pagesContainer.innerHTML = '';
+            imageFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imgUrl = e.target.result;
+                    const page = document.createElement('div');
+                    page.className = 'page';
+                    page.innerHTML = `
+                        <div class="page-side front">
+                            <img src="${imgUrl}" alt="Front Image" />
+                        </div>
+                        <div class="page-side back">
+                            <img src="${imgUrl}" alt="Back Image" />
+                        </div>
+                    `;
+                    pagesContainer.appendChild(page);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function setIndex() {
+            let pages = document.querySelectorAll(".page");
+            for (var i = 0; i < pages.length; i++) {
+                pages[i].style.zIndex = pages.length - i;
+            }
+        }
+
+        function turnLeft() {
+            let pages = document.querySelectorAll(".page");
+            if (pages.length === 0) return;
+            let active = pages[currentIndex];
+            let prevIndex = (currentIndex - 1 + pages.length) % pages.length;
+            let prev = pages[prevIndex];
+            active.className = "page";
+            prev.className = "page active";
+            currentIndex = prevIndex;
+            setIndex();
+            prev.style.transform = "rotateY(0deg)";
+            if (prev.previousElementSibling && prev.previousElementSibling.className === "page") {
+                prev.previousElementSibling.style.zIndex = "9998";
+            }
+        }
+
+        function turnRight() {
+            let pages = document.querySelectorAll(".page");
+            if (pages.length === 0) return;
+            let active = pages[currentIndex];
+            let nextIndex = (currentIndex + 1) % pages.length;
+            let next = pages[nextIndex];
+            active.style.transform = "rotateY(180deg)";
+            active.className = "page";
+            currentIndex = nextIndex;
+            setIndex();
+            active.style.zIndex = "9998";
+            if (next) {
+                next.className = "page active";
+            }
+        }
+
+        function downloadImages() {
+            imageFiles.forEach(file => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(file);
+                link.download = file.name;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
+    </script>
+</body>
+</html>
